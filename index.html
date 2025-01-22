@@ -80,6 +80,9 @@
         </div>
     </div>
 
+    <!-- צליל ניצחון -->
+    <audio id="win-sound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
+
     <script>
         let num1, num2, operation, correctAnswer;
 
@@ -115,6 +118,10 @@
             if (userAnswer === correctAnswer) {
                 document.getElementById('result').textContent = 'תשובה נכונה! כל הכבוד!';
                 document.getElementById('result').style.color = 'green';
+
+                // הפעלת צליל ניצחון
+                const winSound = document.getElementById('win-sound');
+                winSound.play();
             } else {
                 document.getElementById('result').textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
                 document.getElementById('result').style.color = 'red';
@@ -147,4 +154,5 @@
     </script>
 </body>
 </html>
+
 
