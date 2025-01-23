@@ -78,6 +78,10 @@
         <div class="result" id="result"></div>
     </div>
     <img src="https://i.imgur.com/eJgX2ft.png" alt="חד קרן">
+
+    <!-- קובץ אודיו של מחיאות כפיים -->
+    <audio id="clap-sound" src="https://www.soundjay.com/human/applause-01.mp3"></audio>
+
     <script>
         let num1, num2, operation, correctAnswer;
 
@@ -127,22 +131,31 @@
 
         function checkAnswer(selectedAnswer) {
             const resultDiv = document.getElementById('result');
+            const clapSound = document.getElementById('clap-sound');
 
             if (selectedAnswer === correctAnswer) {
                 resultDiv.textContent = 'תשובה נכונה! כל הכבוד!';
                 resultDiv.style.color = 'green';
+
+                // הפעלת צליל מחיאות כפיים
+                clapSound.currentTime = 0; // מתחיל מהתחלה
+                clapSound.play();
             } else {
                 resultDiv.textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
                 resultDiv.style.color = 'red';
             }
 
-            setTimeout(generateQuestion, 3000); // שאלה חדשה אחרי 3 שניות
+            setTimeout(() => {
+                clapSound.pause(); // עוצר את הצליל לאחר 5 שניות
+                generateQuestion();
+            }, 5000); // שאלה חדשה אחרי 5 שניות
         }
 
         generateQuestion(); // יוצרים שאלה ראשונה
     </script>
 </body>
 </html>
+
 
 
 
