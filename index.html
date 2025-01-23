@@ -175,11 +175,6 @@
                 resultDiv.textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
                 resultDiv.style.color = 'red';
             }
-
-            setTimeout(() => {
-                clapSound.pause(); // עוצר את הצליל לאחר 5 שניות
-                generateQuestion();
-            }, 5000); // שאלה חדשה אחרי 5 שניות
         }
 
         function showHint() {
@@ -188,7 +183,11 @@
             hintDisplay.innerHTML = hint;
         }
 
+        // מחליפים שאלה כל 3 שניות
+        setInterval(generateQuestion, 3000);
+
         generateQuestion(); // יוצרים שאלה ראשונה
     </script>
 </body>
 </html>
+
