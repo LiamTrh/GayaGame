@@ -67,6 +67,11 @@
             width: 150px;
             margin: 20px 0;
         }
+        #unicorn-celebration {
+            display: none;
+            width: 200px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -76,8 +81,8 @@
         <div class="question" id="question"></div>
         <div class="answers" id="answers"></div>
         <div class="result" id="result"></div>
+        <img id="unicorn-celebration" src="https://i.imgur.com/eJgX2ft.png" alt="חגיגת חד קרן">
     </div>
-    <img src="https://i.imgur.com/eJgX2ft.png" alt="חד קרן">
 
     <!-- קובץ אודיו של מחיאות כפיים -->
     <audio id="clap-sound" src="https://www.soundjay.com/human/applause-01.mp3"></audio>
@@ -86,6 +91,9 @@
         let num1, num2, operation, correctAnswer;
 
         function generateQuestion() {
+            const unicornImage = document.getElementById('unicorn-celebration');
+            unicornImage.style.display = 'none'; // מסתירים את חד הקרן בתחילת שאלה חדשה
+
             do {
                 num1 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
                 num2 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
@@ -132,10 +140,14 @@
         function checkAnswer(selectedAnswer) {
             const resultDiv = document.getElementById('result');
             const clapSound = document.getElementById('clap-sound');
+            const unicornImage = document.getElementById('unicorn-celebration');
 
             if (selectedAnswer === correctAnswer) {
                 resultDiv.textContent = 'תשובה נכונה! כל הכבוד!';
                 resultDiv.style.color = 'green';
+
+                // הצגת חד הקרן וחגיגות
+                unicornImage.style.display = 'block';
 
                 // הפעלת צליל מחיאות כפיים
                 clapSound.currentTime = 0; // מתחיל מהתחלה
@@ -146,15 +158,16 @@
             }
 
             setTimeout(() => {
-                clapSound.pause(); // עוצר את הצליל לאחר 5 שניות
+                clapSound.pause(); // עוצר את הצליל לאחר 10 שניות
                 generateQuestion();
-            }, 5000); // שאלה חדשה אחרי 5 שניות
+            }, 10000); // שאלה חדשה אחרי 10 שניות
         }
 
         generateQuestion(); // יוצרים שאלה ראשונה
     </script>
 </body>
 </html>
+
 
 
 
