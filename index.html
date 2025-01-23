@@ -91,8 +91,9 @@
         <div id="cheer-message">כל הכבוד! תמשיכי ככה, אלופה שלי! 🦄✨</div>
     </div>
 
-    <!-- קובץ אודיו של מחיאות כפיים וקריאות עידוד -->
+    <!-- קבצי אודיו -->
     <audio id="clap-sound" src="https://www.soundjay.com/human/applause-01.mp3"></audio>
+    <audio id="cheer-sound" src="https://www.soundjay.com/human/cheering-crowd-01.mp3"></audio>
 
     <script>
         let num1, num2, operation, correctAnswer;
@@ -149,6 +150,7 @@
         function checkAnswer(selectedAnswer) {
             const resultDiv = document.getElementById('result');
             const clapSound = document.getElementById('clap-sound');
+            const cheerSound = document.getElementById('cheer-sound');
             const unicornImage = document.getElementById('unicorn-celebration');
             const cheerMessage = document.getElementById('cheer-message');
 
@@ -160,16 +162,19 @@
                 unicornImage.style.display = 'block';
                 cheerMessage.style.display = 'block';
 
-                // הפעלת צליל מחיאות כפיים
-                clapSound.currentTime = 0; // מתחיל מהתחלה
+                // הפעלת צליל מחיאות כפיים וקריאות עידוד
+                clapSound.currentTime = 0;
+                cheerSound.currentTime = 0;
                 clapSound.play();
+                cheerSound.play();
             } else {
                 resultDiv.textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
                 resultDiv.style.color = 'red';
             }
 
             setTimeout(() => {
-                clapSound.pause(); // עוצר את הצליל לאחר 10 שניות
+                clapSound.pause();
+                cheerSound.pause();
                 generateQuestion();
             }, 10000); // שאלה חדשה אחרי 10 שניות
         }
@@ -178,6 +183,7 @@
     </script>
 </body>
 </html>
+
 
 
 
