@@ -8,17 +8,20 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f0f8ff;
+            background-color: #87CEFA; /* כחול בהיר */
             margin: 0;
             padding: 20px;
         }
         .container {
             max-width: 400px;
-            margin: 0 auto;
+            margin: 20px auto;
             background: #fff;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            color: #333;
         }
         .question {
             font-size: 24px;
@@ -48,17 +51,22 @@
             font-size: 20px;
             font-weight: bold;
         }
+        img {
+            width: 100px;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
     <h1>משחק חיבור וחיסור</h1>
+    <img src="https://i.imgur.com/1NglNpG.png" alt="סטיץ'">
     <div class="container">
         <div class="question" id="question"></div>
         <input type="number" id="answer" placeholder="תשובה">
         <button onclick="checkAnswer()">בדוק תשובה</button>
         <div class="result" id="result"></div>
     </div>
-
+    <img src="https://i.imgur.com/1NglNpG.png" alt="סטיץ'">
     <script>
         let num1, num2, operation, correctAnswer;
 
@@ -104,6 +112,7 @@
     </script>
 </body>
 </html>
+
 
 
 
