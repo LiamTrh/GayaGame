@@ -158,7 +158,6 @@
 
         function checkAnswer(selectedAnswer) {
             const resultDiv = document.getElementById('result');
-            const clapSound = document.getElementById('clap-sound');
             const unicornCelebration = document.getElementById('unicorn-celebration');
 
             if (selectedAnswer === correctAnswer) {
@@ -168,16 +167,12 @@
                 // הצגת חגיגת חדי קרן
                 unicornCelebration.style.display = 'flex';
 
-                // הפעלת צליל מחיאות כפיים
-                clapSound.currentTime = 0;
-                clapSound.play();
+                // מחליפים שאלה אחרי 2 שניות
+                setTimeout(generateQuestion, 2000);
             } else {
                 resultDiv.textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
                 resultDiv.style.color = 'red';
             }
-
-            // מחליפים שאלה אחרי 2 שניות
-            setTimeout(generateQuestion, 2000);
         }
 
         function showHint() {
