@@ -175,6 +175,9 @@
                 resultDiv.textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
                 resultDiv.style.color = 'red';
             }
+
+            // מחליפים שאלה אחרי 2 שניות
+            setTimeout(generateQuestion, 2000);
         }
 
         function showHint() {
@@ -182,9 +185,6 @@
             const hint = `מספר ראשון: ${'🖐️'.repeat(num1)}<br>מספר שני: ${'🖐️'.repeat(num2)}`;
             hintDisplay.innerHTML = hint;
         }
-
-        // מחליפים שאלה כל 3 שניות
-        setInterval(generateQuestion, 3000);
 
         generateQuestion(); // יוצרים שאלה ראשונה
     </script>
