@@ -89,39 +89,10 @@
         button#hint:hover {
             background-color: #45a049;
         }
-        #shop {
-            margin-top: 20px;
-        }
-        #shop button {
-            font-size: 2rem;
-            padding: 15px 30px;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        #shop button:hover {
-            background-color: #0056b3;
-        }
-        .shop-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-        .shop-item {
-            margin: 15px;
-        }
-        .shop-item img {
-            width: 120px;
-            border-radius: 10px;
-        }
     </style>
 </head>
 <body>
     <h1>משחק חיבור וחיסור</h1>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Unicorn_illustration.png/800px-Unicorn_illustration.png" alt="חדי קרן"/>
     <div class="container">
         <div class="question" id="question"></div>
         <div class="answers" id="answers"></div>
@@ -129,23 +100,6 @@
         <div class="hint-display" id="hint-display"></div>
         <div class="result" id="result"></div>
         <div id="unicorn-celebration"></div>
-        <div id="shop">
-            <button onclick="openShop()">לחץ לחנות</button>
-        </div>
-        <div class="shop-container" id="shop-container">
-            <div class="shop-item">
-                <img src="https://example.com/unicorn-doll.jpg" alt="בובת חד קרן">
-                <p>בובת חד קרן</p>
-            </div>
-            <div class="shop-item">
-                <img src="https://example.com/stitch-doll.jpg" alt="בובת סטיץ׳">
-                <p>בובת סטיץ׳</p>
-            </div>
-            <div class="shop-item">
-                <img src="https://example.com/simba-doll.jpg" alt="בובת סימבה">
-                <p>בובת סימבה</p>
-            </div>
-        </div>
     </div>
 
     <script>
@@ -226,11 +180,6 @@
             const hintDisplay = document.getElementById('hint-display');
             const hint = `מספר ראשון: ${'🖐️'.repeat(num1)}<br>מספר שני: ${'🖐️'.repeat(num2)}`;
             hintDisplay.innerHTML = hint;
-        }
-
-        function openShop() {
-            const shopContainer = document.getElementById('shop-container');
-            shopContainer.style.display = shopContainer.style.display === 'flex' ? 'none' : 'flex';
         }
 
         generateQuestion(); // יוצרים שאלה ראשונה
