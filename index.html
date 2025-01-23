@@ -8,7 +8,9 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background: linear-gradient(to bottom, red, orange, yellow, green, blue, indigo, violet); /* רקע בצבעי הקשת */
+            background: linear-gradient(to bottom, pink, purple, red, lightblue); /* רקע בצבעים ורוד, סגול, אדום ותכלת */
+            background-image: url('https://i.imgur.com/Vy6k5eJ.png'); /* רקע עם עננים */
+            background-size: cover;
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -68,27 +70,6 @@
             font-weight: bold;
             color: #333;
         }
-        img {
-            width: 150px;
-            margin: 10px 0;
-        }
-        #unicorn-celebration {
-            display: none;
-            width: 200px;
-            margin-top: 20px;
-        }
-        button#hint {
-            font-size: 2rem;
-            padding: 15px 30px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        button#hint:hover {
-            background-color: #45a049;
-        }
     </style>
 </head>
 <body>
@@ -99,7 +80,6 @@
         <button id="hint" onclick="showHint()">רמז</button>
         <div class="hint-display" id="hint-display"></div>
         <div class="result" id="result"></div>
-        <div id="unicorn-celebration"></div>
     </div>
 
     <script>
@@ -107,9 +87,7 @@
         let correctCount = 0; // מספר תשובות נכונות
 
         function generateQuestion() {
-            const unicornCelebration = document.getElementById('unicorn-celebration');
             const hintDisplay = document.getElementById('hint-display');
-            unicornCelebration.style.display = 'none'; // מסתירים את החגיגה
             hintDisplay.textContent = ''; // מאפסים את הרמז
 
             do {
