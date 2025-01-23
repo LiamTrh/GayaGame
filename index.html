@@ -22,7 +22,7 @@
         }
         .question {
             font-size: 24px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         input[type="number"] {
             font-size: 18px;
@@ -43,18 +43,6 @@
         button:hover {
             background-color: #45a049;
         }
-        .hint {
-            margin-top: 20px;
-        }
-        .hint .fingers {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        .hint .fingers div {
-            margin: 0 5px;
-            font-size: 20px;
-        }
         .result {
             margin-top: 20px;
             font-size: 20px;
@@ -63,47 +51,33 @@
     </style>
 </head>
 <body>
+    <h1>משחק חיבור וחיסור</h1>
     <div class="container">
-        <h1>משחק חיבור וחיסור</h1>
         <div class="question" id="question"></div>
         <input type="number" id="answer" placeholder="תשובה">
-        <div>
-            <button onclick="checkAnswer()">בדוק תשובה</button>
-            <button onclick="showHint()">רמז</button>
-        </div>
+        <button onclick="checkAnswer()">בדוק תשובה</button>
         <div class="result" id="result"></div>
-        <div class="hint" id="hint" style="display: none;">
-            <div>מספר ראשון:</div>
-            <div class="fingers" id="fingers1"></div>
-            <div>מספר שני:</div>
-            <div class="fingers" id="fingers2"></div>
-        </div>
     </div>
-
-    <!-- צליל ניצחון -->
-    <audio id="win-sound" src="https://www.soundjay.com/button/beep-07.wav"></audio>
 
     <script>
         let num1, num2, operation, correctAnswer;
 
         function generateQuestion() {
-            num1 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
-            num2 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
-            operation = Math.random() < 0.5 ? '+' : '-'; // חיבור או חיסור
+            do {
+                num1 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
+                num2 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
+                operation = Math.random() < 0.5 ? '+' : '-'; // חיבור או חיסור
 
-            if (operation === '-' && num1 < num2) {
-                // מבטיחים שהתוצאה לא תהיה שלילית
-                [num1, num2] = [num2, num1];
-            }
+                if (operation === '-' && num1 < num2) {
+                    [num1, num2] = [num2, num1]; // למנוע תוצאה שלילית
+                }
 
-            correctAnswer = operation === '+' ? num1 + num2 : num1 - num2;
+                correctAnswer = operation === '+' ? num1 + num2 : num1 - num2;
+            } while (correctAnswer > 10); // להבטיח שהתוצאה 10 או פחות
 
             document.getElementById('question').textContent = `${num1} ${operation} ${num2} = ?`;
             document.getElementById('answer').value = '';
             document.getElementById('result').textContent = '';
-            document.getElementById('hint').style.display = 'none';
-            document.getElementById('fingers1').innerHTML = '';
-            document.getElementById('fingers2').innerHTML = '';
         }
 
         function checkAnswer() {
@@ -118,10 +92,6 @@
             if (userAnswer === correctAnswer) {
                 document.getElementById('result').textContent = 'תשובה נכונה! כל הכבוד!';
                 document.getElementById('result').style.color = 'green';
-
-                // הפעלת צליל ניצחון
-                const winSound = document.getElementById('win-sound');
-                winSound.play();
             } else {
                 document.getElementById('result').textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
                 document.getElementById('result').style.color = 'red';
@@ -130,29 +100,10 @@
             setTimeout(generateQuestion, 2000); // שאלה חדשה אחרי 2 שניות
         }
 
-        function showHint() {
-            const hintDiv = document.getElementById('hint');
-            const fingers1 = document.getElementById('fingers1');
-            const fingers2 = document.getElementById('fingers2');
-
-            hintDiv.style.display = 'block';
-
-            fingers1.innerHTML = createFingerHTML(num1);
-            fingers2.innerHTML = createFingerHTML(num2);
-        }
-
-        function createFingerHTML(number) {
-            let html = '';
-            for (let i = 0; i < number; i++) {
-                html += '🖐️ ';
-            }
-            return html.trim();
-        }
-
-        // יוצרים שאלה ראשונה עם טעינת הדף
-        generateQuestion();
+        generateQuestion(); // יוצרים שאלה ראשונה
     </script>
 </body>
 </html>
+
 
 
