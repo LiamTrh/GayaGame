@@ -57,6 +57,11 @@
             background-color: #ff1493;
             transform: scale(1.1);
         }
+        .hint {
+            font-size: 1.8rem;
+            margin-top: 20px;
+            color: #555;
+        }
         .result {
             margin-top: 30px;
             font-size: 2rem;
@@ -69,37 +74,31 @@
         }
         #unicorn-celebration {
             display: none;
-            width: 100%;
+            width: 200px;
             margin-top: 20px;
         }
-        #unicorn-celebration img {
-            width: 150px;
-            margin: 10px;
+        .hint-display {
+            font-size: 2rem;
+            color: #333;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <h1>משחק חיבור וחיסור</h1>
-    <div class="unicorn-row">
-        <img src="unicorn1.png" alt="חד קרן">
-        <img src="unicorn2.png" alt="חד קרן">
-        <img src="unicorn3.png" alt="חד קרן">
-    </div>
+    <img src="unicorn1.png" alt="חד קרן">
     <div class="container">
         <div class="question" id="question"></div>
         <div class="answers" id="answers"></div>
+        <button onclick="showHint()">רמז</button>
+        <div class="hint-display" id="hint-display"></div>
         <div class="result" id="result"></div>
         <div id="unicorn-celebration">
             <img src="unicorn1.png" alt="חד קרן">
             <img src="unicorn2.png" alt="חד קרן">
-            <img src="unicorn3.png" alt="חד קרן">
         </div>
     </div>
-    <div class="unicorn-row">
-        <img src="unicorn1.png" alt="חד קרן">
-        <img src="unicorn2.png" alt="חד קרן">
-        <img src="unicorn3.png" alt="חד קרן">
-    </div>
+    <img src="unicorn3.png" alt="חד קרן">
 
     <!-- קובץ אודיו של מחיאות כפיים -->
     <audio id="clap-sound" src="clapping.mp3"></audio>
@@ -109,7 +108,9 @@
 
         function generateQuestion() {
             const unicornCelebration = document.getElementById('unicorn-celebration');
-            unicornCelebration.style.display = 'none'; // מסתירים את החגיגה בתחילת שאלה חדשה
+            const hintDisplay = document.getElementById('hint-display');
+            unicornCelebration.style.display = 'none'; // מסתירים את החגיגה
+            hintDisplay.textContent = ''; // מאפסים את הרמז
 
             do {
                 num1 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
@@ -180,10 +181,17 @@
             }, 5000); // שאלה חדשה אחרי 5 שניות
         }
 
+        function showHint() {
+            const hintDisplay = document.getElementById('hint-display');
+            let hint = `מספר ראשון: ${'🖐️'.repeat(num1)}<br>מספר שני: ${'🖐️'.repeat(num2)}`;
+            hintDisplay.innerHTML = hint;
+        }
+
         generateQuestion(); // יוצרים שאלה ראשונה
     </script>
 </body>
 </html>
+
 
 
 
