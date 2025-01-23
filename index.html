@@ -93,7 +93,7 @@
 </head>
 <body>
     <h1>משחק חיבור וחיסור</h1>
-    <img src="unicorn.png" alt="חדי קרן"/>
+    <img src="unicorn1.png" alt="חד קרן">
     <div class="container">
         <div class="question" id="question"></div>
         <div class="answers" id="answers"></div>
@@ -101,8 +101,14 @@
         <div class="hint-display" id="hint-display"></div>
         <div class="result" id="result"></div>
         <div id="unicorn-celebration">
+            <img src="unicorn2.png" alt="חגיגת חד קרן">
+            <img src="unicorn3.png" alt="חגיגת חד קרן">
         </div>
     </div>
+    <img src="unicorn4.png" alt="חד קרן">
+
+    <!-- קובץ אודיו של מחיאות כפיים -->
+    <audio id="clap-sound" src="clapping.mp3"></audio>
 
     <script>
         let num1, num2, operation, correctAnswer;
@@ -138,16 +144,13 @@
             const answers = new Set();
             answers.add(correctAnswer); // מוסיפים את התשובה הנכונה
 
-            // יוצרים 4 תשובות שגויות
             while (answers.size < 5) {
                 const randomAnswer = Math.floor(Math.random() * 11); // מספר רנדומלי בין 0 ל-10
                 answers.add(randomAnswer);
             }
 
-            // מערבבים את התשובות
             const shuffledAnswers = Array.from(answers).sort(() => Math.random() - 0.5);
 
-            // מציגים את התשובות
             shuffledAnswers.forEach(answer => {
                 const button = document.createElement('button');
                 button.textContent = answer;
@@ -165,10 +168,8 @@
                 resultDiv.textContent = 'תשובה נכונה! כל הכבוד!';
                 resultDiv.style.color = 'green';
 
-                // הצגת חגיגת חדי קרן
                 unicornCelebration.style.display = 'flex';
 
-                // הפעלת צליל מחיאות כפיים
                 clapSound.currentTime = 0;
                 clapSound.play();
             } else {
@@ -177,18 +178,17 @@
             }
 
             setTimeout(() => {
-                clapSound.pause(); // עוצר את הצליל לאחר 5 שניות
+                clapSound.pause();
                 generateQuestion();
-            }, 5000); // שאלה חדשה אחרי 5 שניות
+            }, 5000);
         }
 
         function showHint() {
             const hintDisplay = document.getElementById('hint-display');
-            const hint = `מספר ראשון: ${'🖐️'.repeat(num1)}<br>מספר שני: ${'🖐️'.repeat(num2)}`;
-            hintDisplay.innerHTML = hint;
+            hintDisplay.innerHTML = `מספר ראשון: ${'🖐️'.repeat(num1)}<br>מספר שני: ${'🖐️'.repeat(num2)}`;
         }
 
-        generateQuestion(); // יוצרים שאלה ראשונה
+        generateQuestion();
     </script>
 </body>
 </html>
