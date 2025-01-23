@@ -65,23 +65,40 @@
         }
         img {
             width: 150px;
-            margin: 20px 0;
+            margin: 10px 0;
         }
         #unicorn-celebration {
             display: none;
-            width: 200px;
+            width: 100%;
             margin-top: 20px;
+        }
+        #unicorn-celebration img {
+            width: 150px;
+            margin: 10px;
         }
     </style>
 </head>
 <body>
     <h1>משחק חיבור וחיסור</h1>
-    <img src="unicorn1.png" alt="חד קרן">
+    <div class="unicorn-row">
+        <img src="unicorn1.png" alt="חד קרן">
+        <img src="unicorn2.png" alt="חד קרן">
+        <img src="unicorn3.png" alt="חד קרן">
+    </div>
     <div class="container">
         <div class="question" id="question"></div>
         <div class="answers" id="answers"></div>
         <div class="result" id="result"></div>
-        <img id="unicorn-celebration" src="unicorn2.png" alt="חגיגת חד קרן">
+        <div id="unicorn-celebration">
+            <img src="unicorn1.png" alt="חד קרן">
+            <img src="unicorn2.png" alt="חד קרן">
+            <img src="unicorn3.png" alt="חד קרן">
+        </div>
+    </div>
+    <div class="unicorn-row">
+        <img src="unicorn1.png" alt="חד קרן">
+        <img src="unicorn2.png" alt="חד קרן">
+        <img src="unicorn3.png" alt="חד קרן">
     </div>
 
     <!-- קובץ אודיו של מחיאות כפיים -->
@@ -91,8 +108,8 @@
         let num1, num2, operation, correctAnswer;
 
         function generateQuestion() {
-            const unicornImage = document.getElementById('unicorn-celebration');
-            unicornImage.style.display = 'none'; // מסתירים את חד הקרן בתחילת שאלה חדשה
+            const unicornCelebration = document.getElementById('unicorn-celebration');
+            unicornCelebration.style.display = 'none'; // מסתירים את החגיגה בתחילת שאלה חדשה
 
             do {
                 num1 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
@@ -140,17 +157,17 @@
         function checkAnswer(selectedAnswer) {
             const resultDiv = document.getElementById('result');
             const clapSound = document.getElementById('clap-sound');
-            const unicornImage = document.getElementById('unicorn-celebration');
+            const unicornCelebration = document.getElementById('unicorn-celebration');
 
             if (selectedAnswer === correctAnswer) {
                 resultDiv.textContent = 'תשובה נכונה! כל הכבוד!';
                 resultDiv.style.color = 'green';
 
-                // הצגת חד הקרן וחגיגות
-                unicornImage.style.display = 'block';
+                // הצגת חגיגת חדי קרן
+                unicornCelebration.style.display = 'flex';
 
                 // הפעלת צליל מחיאות כפיים
-                clapSound.currentTime = 0; // מתחיל מהתחלה
+                clapSound.currentTime = 0;
                 clapSound.play();
             } else {
                 resultDiv.textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
@@ -167,6 +184,7 @@
     </script>
 </body>
 </html>
+
 
 
 
