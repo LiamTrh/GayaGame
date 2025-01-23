@@ -34,24 +34,22 @@
             margin-bottom: 15px;
             color: #333;
         }
-        input[type="number"] {
-            font-size: 18px;
-            padding: 5px;
-            width: 100px;
-            text-align: center;
-            margin-bottom: 15px;
+        .answers {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
         }
-        button {
+        .answers button {
             font-size: 18px;
             padding: 10px 20px;
-            margin: 10px 5px;
             background-color: #ff69b4;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
-        button:hover {
+        .answers button:hover {
             background-color: #ff1493;
         }
         .result {
@@ -71,9 +69,7 @@
     <img src="https://i.imgur.com/eJgX2ft.png" alt="חד קרן">
     <div class="container">
         <div class="question" id="question"></div>
-        <input type="number" id="answer" placeholder="תשובה">
-        <br>
-        <button onclick="checkAnswer()">בדוק תשובה</button>
+        <div class="answers" id="answers"></div>
         <div class="result" id="result"></div>
     </div>
     <img src="https://i.imgur.com/eJgX2ft.png" alt="חד קרן">
@@ -94,25 +90,45 @@
             } while (correctAnswer > 10); // להבטיח שהתוצאה 10 או פחות
 
             document.getElementById('question').textContent = `${num1} ${operation} ${num2} = ?`;
-            document.getElementById('answer').value = '';
+
+            generateAnswers(); // מייצרים תשובות
             document.getElementById('result').textContent = '';
         }
 
-        function checkAnswer() {
-            const userAnswer = parseInt(document.getElementById('answer').value, 10);
+        function generateAnswers() {
+            const answersDiv = document.getElementById('answers');
+            answersDiv.innerHTML = ''; // איפוס תשובות קודמות
 
-            if (isNaN(userAnswer)) {
-                document.getElementById('result').textContent = 'אנא הזן מספר תקין.';
-                document.getElementById('result').style.color = 'red';
-                return;
+            const answers = new Set();
+            answers.add(correctAnswer); // מוסיפים את התשובה הנכונה
+
+            // יוצרים 4 תשובות שגויות
+            while (answers.size < 5) {
+                const randomAnswer = Math.floor(Math.random() * 11); // מספר רנדומלי בין 0 ל-10
+                answers.add(randomAnswer);
             }
 
-            if (userAnswer === correctAnswer) {
-                document.getElementById('result').textContent = 'תשובה נכונה! כל הכבוד!';
-                document.getElementById('result').style.color = 'green';
+            // מערבבים את התשובות
+            const shuffledAnswers = Array.from(answers).sort(() => Math.random() - 0.5);
+
+            // מציגים את התשובות
+            shuffledAnswers.forEach(answer => {
+                const button = document.createElement('button');
+                button.textContent = answer;
+                button.onclick = () => checkAnswer(answer);
+                answersDiv.appendChild(button);
+            });
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const resultDiv = document.getElementById('result');
+
+            if (selectedAnswer === correctAnswer) {
+                resultDiv.textContent = 'תשובה נכונה! כל הכבוד!';
+                resultDiv.style.color = 'green';
             } else {
-                document.getElementById('result').textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
-                document.getElementById('result').style.color = 'red';
+                resultDiv.textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
+                resultDiv.style.color = 'red';
             }
 
             setTimeout(generateQuestion, 2000); // שאלה חדשה אחרי 2 שניות
@@ -122,6 +138,7 @@
     </script>
 </body>
 </html>
+
 
 
 
