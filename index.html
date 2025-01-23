@@ -89,6 +89,34 @@
         button#hint:hover {
             background-color: #45a049;
         }
+        #shop {
+            margin-top: 20px;
+        }
+        #shop button {
+            font-size: 2rem;
+            padding: 15px 30px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        #shop button:hover {
+            background-color: #0056b3;
+        }
+        .shop-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .shop-item {
+            margin: 15px;
+        }
+        .shop-item img {
+            width: 120px;
+            border-radius: 10px;
+        }
     </style>
 </head>
 <body>
@@ -100,12 +128,29 @@
         <button id="hint" onclick="showHint()">רמז</button>
         <div class="hint-display" id="hint-display"></div>
         <div class="result" id="result"></div>
-        <div id="unicorn-celebration">
+        <div id="unicorn-celebration"></div>
+        <div id="shop">
+            <button onclick="openShop()">לחץ לחנות</button>
+        </div>
+        <div class="shop-container" id="shop-container">
+            <div class="shop-item">
+                <img src="unicorn-doll.jpg" alt="בובת חד קרן">
+                <p>בובת חד קרן</p>
+            </div>
+            <div class="shop-item">
+                <img src="stitch-doll.jpg" alt="בובת סטיץ׳">
+                <p>בובת סטיץ׳</p>
+            </div>
+            <div class="shop-item">
+                <img src="simba-doll.jpg" alt="בובת סימבה">
+                <p>בובת סימבה</p>
+            </div>
         </div>
     </div>
 
     <script>
         let num1, num2, operation, correctAnswer;
+        let correctCount = 0; // מספר תשובות נכונות
 
         function generateQuestion() {
             const unicornCelebration = document.getElementById('unicorn-celebration');
@@ -158,17 +203,19 @@
 
         function checkAnswer(selectedAnswer) {
             const resultDiv = document.getElementById('result');
-            const unicornCelebration = document.getElementById('unicorn-celebration');
 
             if (selectedAnswer === correctAnswer) {
+                correctCount++; // העלאה של מונה התשובות הנכונות
                 resultDiv.textContent = 'תשובה נכונה! כל הכבוד!';
                 resultDiv.style.color = 'green';
 
-                // הצגת חגיגת חדי קרן
-                unicornCelebration.style.display = 'flex';
-
-                // מחליפים שאלה אחרי 2 שניות
-                setTimeout(generateQuestion, 2000);
+                if (correctCount === 5) {
+                    resultDiv.textContent = 'כל הכבוד! ענית נכון על 5 שאלות! אתה יכול לקנות בובה!';
+                    resultDiv.style.color = 'gold';
+                    correctCount = 0; // איפוס המונה
+                } else {
+                    setTimeout(generateQuestion, 2000); // מחליפים שאלה אחרי 2 שניות
+                }
             } else {
                 resultDiv.textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
                 resultDiv.style.color = 'red';
@@ -181,8 +228,12 @@
             hintDisplay.innerHTML = hint;
         }
 
+        function openShop() {
+            const shopContainer = document.getElementById('shop-container');
+            shopContainer.style.display = shopContainer.style.display === 'flex' ? 'none' : 'flex';
+        }
+
         generateQuestion(); // יוצרים שאלה ראשונה
     </script>
 </body>
 </html>
-
