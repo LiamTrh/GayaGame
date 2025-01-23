@@ -114,8 +114,8 @@
             hintDisplay.textContent = ''; // מאפסים את הרמז
 
             do {
-                num1 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
-                num2 = Math.floor(Math.random() * 6); // מספר בין 0 ל-5
+                num1 = Math.floor(Math.random() * 4) + 2; // מספר בין 2 ל-5
+                num2 = Math.floor(Math.random() * 4) + 2; // מספר בין 2 ל-5
                 operation = Math.random() < 0.5 ? '+' : '-'; // חיבור או חיסור
 
                 if (operation === '-' && num1 < num2) {
@@ -185,5 +185,4 @@
     </script>
 </body>
 </html>
-
 
