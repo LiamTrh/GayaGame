@@ -5,78 +5,79 @@ import sys
 pygame.init()
 
 # Screen dimensions
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Brawl Stars Clone - Basic Example")
+SCREEN_WIDTH, SCREEN_HEIGHT = 800, 600
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Simple Shooting Game")
 
 # Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
-BLUE = (0, 0, 255)
-
-# Player settings
-player_size = 50
-player_pos = [WIDTH // 2, HEIGHT // 2]
-player_speed = 5
-
-# Bullet settings
-bullets = []
-bullet_speed = 7
-bullet_radius = 5
 
 # Clock
 clock = pygame.time.Clock()
 
-# Main game loop
+# Player setup
+player = pygame.Rect(100, 250, 50, 50)
+player_speed = 5
+
+# Enemy setup
+enemy = pygame.Rect(600, 250, 50, 50)
+enemy_alive = True
+
+# Bullet setup
+bullet_width, bullet_height = 10, 5
+bullets = []
+bullet_speed = 10
+
+# Game loop
 running = True
 while running:
     screen.fill(WHITE)
 
-    # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
+        # Shooting bullets
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            bullets.append(pygame.Rect(player.x + player.width, player.y + player.height // 2 - bullet_height // 2, bullet_width, bullet_height))
+
     # Player movement
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_w] and player_pos[1] > 0:
-        player_pos[1] -= player_speed
-    if keys[pygame.K_s] and player_pos[1] < HEIGHT - player_size:
-        player_pos[1] += player_speed
-    if keys[pygame.K_a] and player_pos[0] > 0:
-        player_pos[0] -= player_speed
-    if keys[pygame.K_d] and player_pos[0] < WIDTH - player_size:
-        player_pos[0] += player_speed
-
-    # Shooting bullets
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        mouse_pos = pygame.mouse.get_pos()
-        bullet_dir = [mouse_pos[0] - player_pos[0], mouse_pos[1] - player_pos[1]]
-        magnitude = (bullet_dir[0] ** 2 + bullet_dir[1] ** 2) ** 0.5
-        bullet_dir[0] /= magnitude
-        bullet_dir[1] /= magnitude
-        bullets.append([player_pos[0] + player_size // 2, player_pos[1] + player_size // 2, bullet_dir])
+    if keys[pygame.K_UP] and player.top > 0:
+        player.y -= player_speed
+    if keys[pygame.K_DOWN] and player.bottom < SCREEN_HEIGHT:
+        player.y += player_speed
 
     # Update bullets
     for bullet in bullets[:]:
-        bullet[0] += bullet[2][0] * bullet_speed
-        bullet[1] += bullet[2][1] * bullet_speed
-        if bullet[0] < 0 or bullet[0] > WIDTH or bullet[1] < 0 or bullet[1] > HEIGHT:
+        bullet.x += bullet_speed
+        if bullet.x > SCREEN_WIDTH:
             bullets.remove(bullet)
 
+    # Check for collision with enemy
+    if enemy_alive:
+        for bullet in bullets:
+            if enemy.colliderect(bullet):
+                enemy_alive = False
+                bullets.remove(bullet)
+
     # Draw player
-    pygame.draw.rect(screen, BLUE, (player_pos[0], player_pos[1], player_size, player_size))
+    pygame.draw.rect(screen, BLACK, player)
+
+    # Draw enemy
+    if enemy_alive:
+        pygame.draw.rect(screen, RED, enemy)
 
     # Draw bullets
     for bullet in bullets:
-        pygame.draw.circle(screen, RED, (int(bullet[0]), int(bullet[1])), bullet_radius)
+        pygame.draw.rect(screen, BLACK, bullet)
 
     # Refresh screen
     pygame.display.flip()
-
-    # Tick
     clock.tick(60)
 
 pygame.quit()
 sys.exit()
+
