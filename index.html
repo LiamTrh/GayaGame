@@ -91,10 +91,10 @@
 
     function generateQuestion() {
       while (true) {
-        num1 = Math.floor(Math.random() * 9) + 3; // מספר מ-3 עד 10
-        num2 = Math.floor(Math.random() * 9) + 3; // מספר מ-3 עד 10
+        num1 = Math.floor(Math.random() * 3) + 1; // מספר מ-1 עד 3
+        num2 = Math.floor(Math.random() * 3) + 1; // מספר מ-1 עד 3
         correctAnswer = num1 * num2;
-        if (correctAnswer <= 100) {
+        if (correctAnswer <= 9) { // לוודא שהתוצאה היא יחידה בלבד
           break;
         }
       }
@@ -106,7 +106,7 @@
 
       // יצירת תשובות שגויות
       while (options.size < 5) {
-        const wrongAnswer = Math.floor(Math.random() * 100) + 1; // מספר אקראי בין 1 ל-100
+        const wrongAnswer = Math.floor(Math.random() * 9) + 1; // מספר אקראי בין 1 ל-9
         if (wrongAnswer !== correctAnswer) {
           options.add(wrongAnswer);
         }
