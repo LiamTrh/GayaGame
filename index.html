@@ -1,105 +1,82 @@
 import pygame
-import random
+import sys
 
-# הגדרות כלליות
+# Initialize Pygame
+pygame.init()
+
+# Screen dimensions
 WIDTH, HEIGHT = 800, 600
-FPS = 60
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Brawl Stars Clone - Basic Example")
 
-# צבעים
+# Colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 
-# אתחול Pygame
-pygame.init()
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Brawl Stars Basic")
+# Player settings
+player_size = 50
+player_pos = [WIDTH // 2, HEIGHT // 2]
+player_speed = 5
+
+# Bullet settings
+bullets = []
+bullet_speed = 7
+bullet_radius = 5
+
+# Clock
 clock = pygame.time.Clock()
 
-# מחלקת שחקן
-class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, color):
-        super().__init__()
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(color)
-        self.rect = self.image.get_rect(center=(x, y))
-        self.speed = 5
-
-    def update(self, keys, controls):
-        if keys[controls['up']] and self.rect.top > 0:
-            self.rect.y -= self.speed
-        if keys[controls['down']] and self.rect.bottom < HEIGHT:
-            self.rect.y += self.speed
-        if keys[controls['left']] and self.rect.left > 0:
-            self.rect.x -= self.speed
-        if keys[controls['right']] and self.rect.right < WIDTH:
-            self.rect.x += self.speed
-
-# מחלקת קליע
-class Bullet(pygame.sprite.Sprite):
-    def __init__(self, x, y, direction, color):
-        super().__init__()
-        self.image = pygame.Surface((10, 10))
-        self.image.fill(color)
-        self.rect = self.image.get_rect(center=(x, y))
-        self.speed = 10 * direction
-
-    def update(self):
-        self.rect.x += self.speed
-        if self.rect.right < 0 or self.rect.left > WIDTH:
-            self.kill()
-
-# יצירת שחקנים
-player1 = Player(100, HEIGHT // 2, RED)
-player2 = Player(WIDTH - 100, HEIGHT // 2, BLUE)
-
-players = pygame.sprite.Group(player1, player2)
-bullets = pygame.sprite.Group()
-
-# שליטה בשחקנים
-controls_p1 = {'up': pygame.K_w, 'down': pygame.K_s, 'left': pygame.K_a, 'right': pygame.K_d, 'shoot': pygame.K_SPACE}
-controls_p2 = {'up': pygame.K_UP, 'down': pygame.K_DOWN, 'left': pygame.K_LEFT, 'right': pygame.K_RIGHT, 'shoot': pygame.K_RETURN}
-
-# לולאת המשחק
+# Main game loop
 running = True
 while running:
-    clock.tick(FPS)
     screen.fill(WHITE)
 
-    # אירועים
-    keys = pygame.key.get_pressed()
+    # Event handling
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        # ירי קליעים
-        if event.type == pygame.KEYDOWN:
-            if event.key == controls_p1['shoot']:
-                bullet = Bullet(player1.rect.centerx + 25, player1.rect.centery, 1, RED)
-                bullets.add(bullet)
-            if event.key == controls_p2['shoot']:
-                bullet = Bullet(player2.rect.centerx - 25, player2.rect.centery, -1, BLUE)
-                bullets.add(bullet)
 
-    # עדכון
-    players.update(keys, controls_p1)
-    players.update(keys, controls_p2)
-    bullets.update()
+    # Player movement
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_w] and player_pos[1] > 0:
+        player_pos[1] -= player_speed
+    if keys[pygame.K_s] and player_pos[1] < HEIGHT - player_size:
+        player_pos[1] += player_speed
+    if keys[pygame.K_a] and player_pos[0] > 0:
+        player_pos[0] -= player_speed
+    if keys[pygame.K_d] and player_pos[0] < WIDTH - player_size:
+        player_pos[0] += player_speed
 
-    # בדיקת פגיעות
+    # Shooting bullets
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        mouse_pos = pygame.mouse.get_pos()
+        bullet_dir = [mouse_pos[0] - player_pos[0], mouse_pos[1] - player_pos[1]]
+        magnitude = (bullet_dir[0] ** 2 + bullet_dir[1] ** 2) ** 0.5
+        bullet_dir[0] /= magnitude
+        bullet_dir[1] /= magnitude
+        bullets.append([player_pos[0] + player_size // 2, player_pos[1] + player_size // 2, bullet_dir])
+
+    # Update bullets
+    for bullet in bullets[:]:
+        bullet[0] += bullet[2][0] * bullet_speed
+        bullet[1] += bullet[2][1] * bullet_speed
+        if bullet[0] < 0 or bullet[0] > WIDTH or bullet[1] < 0 or bullet[1] > HEIGHT:
+            bullets.remove(bullet)
+
+    # Draw player
+    pygame.draw.rect(screen, BLUE, (player_pos[0], player_pos[1], player_size, player_size))
+
+    # Draw bullets
     for bullet in bullets:
-        if player1.rect.colliderect(bullet.rect) and bullet.speed < 0:
-            print("Player 1 hit!")
-            bullet.kill()
-        if player2.rect.colliderect(bullet.rect) and bullet.speed > 0:
-            print("Player 2 hit!")
-            bullet.kill()
+        pygame.draw.circle(screen, RED, (int(bullet[0]), int(bullet[1])), bullet_radius)
 
-    # ציור למסך
-    players.draw(screen)
-    bullets.draw(screen)
-
-    # עדכון תצוגה
+    # Refresh screen
     pygame.display.flip()
 
+    # Tick
+    clock.tick(60)
+
 pygame.quit()
+sys.exit()
