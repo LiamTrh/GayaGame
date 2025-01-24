@@ -27,16 +27,14 @@
       font-size: 24px;
       margin: 20px 0;
     }
-    .input-container {
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
       margin: 20px 0;
     }
-    input[type="number"] {
-      padding: 10px;
-      font-size: 18px;
-      width: 100px;
-      text-align: center;
-    }
-    button {
+    .option {
       padding: 10px 20px;
       font-size: 18px;
       background-color: #4caf50;
@@ -45,7 +43,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    button:hover {
+    .option:hover {
       background-color: #45a049;
     }
     .result {
@@ -53,22 +51,31 @@
       font-size: 20px;
       color: #333;
     }
+    button {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>משחק כפל</h1>
     <div class="question" id="question">...</div>
-    <div class="input-container">
-      <input type="number" id="answer" placeholder="הכנס תשובה">
-      <button onclick="checkAnswer()">שלח תשובה</button>
-    </div>
+    <div class="options" id="options"></div>
     <div class="result" id="result"></div>
     <button onclick="startGame()">התחל מחדש</button>
   </div>
 
   <script>
-    let num1, num2;
+    let num1, num2, correctAnswer;
     let score = 0;
     let questionCount = 0;
     const maxQuestions = 5;
@@ -77,27 +84,48 @@
       while (true) {
         num1 = Math.floor(Math.random() * 9) + 3; // מספר מ-3 עד 10
         num2 = Math.floor(Math.random() * 9) + 3; // מספר מ-3 עד 10
-        if (num1 * num2 <= 100) {
+        correctAnswer = num1 * num2;
+        if (correctAnswer <= 100) {
           break;
         }
       }
     }
 
-    function displayQuestion() {
-      document.getElementById("question").innerText = `מה התוצאה של ${num1} כפול ${num2}?`;
-      document.getElementById("result").innerText = "";
-      document.getElementById("answer").value = "";
-    }
+    function generateOptions() {
+      const options = new Set();
+      options.add(correctAnswer); // הוספת התשובה הנכונה
 
-    function checkAnswer() {
-      const userAnswer = parseInt(document.getElementById("answer").value);
-      if (isNaN(userAnswer)) {
-        document.getElementById("result").innerText = "אנא הכנס מספר חוקי.";
-        return;
+      // יצירת תשובות שגויות
+      while (options.size < 5) {
+        const wrongAnswer = Math.floor(Math.random() * 100) + 1; // מספר אקראי בין 1 ל-100
+        if (wrongAnswer !== correctAnswer) {
+          options.add(wrongAnswer);
+        }
       }
 
-      const correctAnswer = num1 * num2;
-      if (userAnswer === correctAnswer) {
+      // מערבבים את האפשרויות
+      return Array.from(options).sort(() => Math.random() - 0.5);
+    }
+
+    function displayQuestion() {
+      document.getElementById("question").innerText = `מה התוצאה של ${num1} כפול ${num2}?`;
+      const options = generateOptions();
+      const optionsContainer = document.getElementById("options");
+      optionsContainer.innerHTML = ""; // איפוס התשובות הקודמות
+
+      options.forEach(option => {
+        const button = document.createElement("button");
+        button.innerText = option;
+        button.className = "option";
+        button.onclick = () => checkAnswer(option);
+        optionsContainer.appendChild(button);
+      });
+
+      document.getElementById("result").innerText = "";
+    }
+
+    function checkAnswer(selectedAnswer) {
+      if (selectedAnswer === correctAnswer) {
         document.getElementById("result").innerText = "תשובה נכונה! כל הכבוד!";
         score++;
       } else {
@@ -122,8 +150,8 @@
 
     function endGame() {
       document.getElementById("question").innerText = "סיימת את המשחק!";
+      document.getElementById("options").innerHTML = "";
       document.getElementById("result").innerText = `הניקוד שלך: ${score} מתוך ${maxQuestions}.`;
-      document.getElementById("answer").value = "";
     }
 
     // מתחיל את המשחק בעת טעינת הדף
