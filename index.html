@@ -151,10 +151,9 @@
                 resultDiv.textContent = 'תשובה נכונה! כל הכבוד!';
                 resultDiv.style.color = 'green';
 
-                if (correctCount === 5) {
-                    resultDiv.textContent = 'כל הכבוד! ענית נכון על 5 שאלות! אתה יכול לקנות בובה!';
+                if (correctCount === 1000) {
+                    resultDiv.textContent = 'כל הכבוד! ענית נכון על 1000 שאלות!';
                     resultDiv.style.color = 'gold';
-                    correctCount = 0; // איפוס המונה
                 } else {
                     setTimeout(generateQuestion, 2000); // מחליפים שאלה אחרי 2 שניות
                 }
