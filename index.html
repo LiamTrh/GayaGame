@@ -1,175 +1,105 @@
-<!DOCTYPE html>
-<html lang="he">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>משחק חיבור וחיסור</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background: linear-gradient(to bottom, red, orange, yellow, green, blue, indigo, violet); /* רקע בצבעי הקשת */
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            color: white;
-        }
-        .container {
-            background: rgba(255, 255, 255, 0.9); /* רקע לבן שקוף */
-            border-radius: 20px;
-            padding: 30px;
-            max-width: 600px;
-            text-align: center;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
-        h1 {
-            margin-bottom: 30px;
-            font-size: 3rem;
-            color: white;
-        }
-        .question {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .answers {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        .answers button {
-            font-size: 2rem;
-            padding: 20px;
-            margin: 10px;
-            background-color: #ff69b4;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .answers button:hover {
-            background-color: #ff1493;
-            transform: scale(1.1);
-        }
-        .hint-display {
-            font-size: 2.5rem;
-            color: #333;
-            margin-top: 20px;
-        }
-        .result {
-            margin-top: 30px;
-            font-size: 2rem;
-            font-weight: bold;
-            color: #333;
-        }
-        #hint {
-            font-size: 2.5rem; /* עדכון לגודל כפתור גדול יותר */
-            padding: 20px 40px;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        #hint:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-    <h1>משחק חיבור וחיסור</h1>
-    <div class="container">
-        <div class="question" id="question"></div>
-        <div class="answers" id="answers"></div>
-        <button id="hint" onclick="showHint()">רמז</button>
-        <div class="hint-display" id="hint-display"></div>
-        <div class="result" id="result"></div>
-    </div>
+import pygame
+import random
 
-    <script>
-        let num1, num2, operation, correctAnswer;
-        let correctCount = 0; // מספר תשובות נכונות
+# הגדרות כלליות
+WIDTH, HEIGHT = 800, 600
+FPS = 60
 
-        function generateQuestion() {
-            const hintDisplay = document.getElementById('hint-display');
-            hintDisplay.textContent = ''; // מאפסים את הרמז
+# צבעים
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
 
-            do {
-                num1 = Math.floor(Math.random() * 4) + 2; // מספר בין 2 ל-5
-                num2 = Math.floor(Math.random() * 4) + 2; // מספר בין 2 ל-5
-                operation = Math.random() < 0.5 ? '+' : '-'; // חיבור או חיסור
+# אתחול Pygame
+pygame.init()
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Brawl Stars Basic")
+clock = pygame.time.Clock()
 
-                if (operation === '-' && num1 < num2) {
-                    [num1, num2] = [num2, num1]; // למנוע תוצאה שלילית
-                }
+# מחלקת שחקן
+class Player(pygame.sprite.Sprite):
+    def __init__(self, x, y, color):
+        super().__init__()
+        self.image = pygame.Surface((50, 50))
+        self.image.fill(color)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.speed = 5
 
-                correctAnswer = operation === '+' ? num1 + num2 : num1 - num2;
-            } while (correctAnswer > 10); // להבטיח שהתוצאה 10 או פחות
+    def update(self, keys, controls):
+        if keys[controls['up']] and self.rect.top > 0:
+            self.rect.y -= self.speed
+        if keys[controls['down']] and self.rect.bottom < HEIGHT:
+            self.rect.y += self.speed
+        if keys[controls['left']] and self.rect.left > 0:
+            self.rect.x -= self.speed
+        if keys[controls['right']] and self.rect.right < WIDTH:
+            self.rect.x += self.speed
 
-            document.getElementById('question').textContent = `${num1} ${operation} ${num2} = ?`;
+# מחלקת קליע
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, x, y, direction, color):
+        super().__init__()
+        self.image = pygame.Surface((10, 10))
+        self.image.fill(color)
+        self.rect = self.image.get_rect(center=(x, y))
+        self.speed = 10 * direction
 
-            generateAnswers(); // מייצרים תשובות
-            document.getElementById('result').textContent = '';
-        }
+    def update(self):
+        self.rect.x += self.speed
+        if self.rect.right < 0 or self.rect.left > WIDTH:
+            self.kill()
 
-        function generateAnswers() {
-            const answersDiv = document.getElementById('answers');
-            answersDiv.innerHTML = ''; // איפוס תשובות קודמות
+# יצירת שחקנים
+player1 = Player(100, HEIGHT // 2, RED)
+player2 = Player(WIDTH - 100, HEIGHT // 2, BLUE)
 
-            const answers = new Set();
-            answers.add(correctAnswer); // מוסיפים את התשובה הנכונה
+players = pygame.sprite.Group(player1, player2)
+bullets = pygame.sprite.Group()
 
-            // יוצרים 4 תשובות שגויות
-            while (answers.size < 5) {
-                const randomAnswer = Math.floor(Math.random() * 11); // מספר רנדומלי בין 0 ל-10
-                answers.add(randomAnswer);
-            }
+# שליטה בשחקנים
+controls_p1 = {'up': pygame.K_w, 'down': pygame.K_s, 'left': pygame.K_a, 'right': pygame.K_d, 'shoot': pygame.K_SPACE}
+controls_p2 = {'up': pygame.K_UP, 'down': pygame.K_DOWN, 'left': pygame.K_LEFT, 'right': pygame.K_RIGHT, 'shoot': pygame.K_RETURN}
 
-            // מערבבים את התשובות
-            const shuffledAnswers = Array.from(answers).sort(() => Math.random() - 0.5);
+# לולאת המשחק
+running = True
+while running:
+    clock.tick(FPS)
+    screen.fill(WHITE)
 
-            // מציגים את התשובות
-            shuffledAnswers.forEach(answer => {
-                const button = document.createElement('button');
-                button.textContent = answer;
-                button.onclick = () => checkAnswer(answer);
-                answersDiv.appendChild(button);
-            });
-        }
+    # אירועים
+    keys = pygame.key.get_pressed()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        # ירי קליעים
+        if event.type == pygame.KEYDOWN:
+            if event.key == controls_p1['shoot']:
+                bullet = Bullet(player1.rect.centerx + 25, player1.rect.centery, 1, RED)
+                bullets.add(bullet)
+            if event.key == controls_p2['shoot']:
+                bullet = Bullet(player2.rect.centerx - 25, player2.rect.centery, -1, BLUE)
+                bullets.add(bullet)
 
-        function checkAnswer(selectedAnswer) {
-            const resultDiv = document.getElementById('result');
+    # עדכון
+    players.update(keys, controls_p1)
+    players.update(keys, controls_p2)
+    bullets.update()
 
-            if (selectedAnswer === correctAnswer) {
-                correctCount++; // העלאה של מונה התשובות הנכונות
-                resultDiv.textContent = 'תשובה נכונה! כל הכבוד!';
-                resultDiv.style.color = 'green';
+    # בדיקת פגיעות
+    for bullet in bullets:
+        if player1.rect.colliderect(bullet.rect) and bullet.speed < 0:
+            print("Player 1 hit!")
+            bullet.kill()
+        if player2.rect.colliderect(bullet.rect) and bullet.speed > 0:
+            print("Player 2 hit!")
+            bullet.kill()
 
-                if (correctCount === 1000) {
-                    resultDiv.textContent = 'כל הכבוד! ענית נכון על 1000 שאלות!';
-                    resultDiv.style.color = 'gold';
-                } else {
-                    setTimeout(generateQuestion, 2000); // מחליפים שאלה אחרי 2 שניות
-                }
-            } else {
-                resultDiv.textContent = `טעות. התשובה הנכונה היא ${correctAnswer}.`;
-                resultDiv.style.color = 'red';
-            }
-        }
+    # ציור למסך
+    players.draw(screen)
+    bullets.draw(screen)
 
-        function showHint() {
-            const hintDisplay = document.getElementById('hint-display');
-            const hint = `מספר ראשון: ${'🖐️'.repeat(num1)}<br>מספר שני: ${'🖐️'.repeat(num2)}`;
-            hintDisplay.innerHTML = hint;
-        }
+    # עדכון תצוגה
+    pygame.display.flip()
 
-        generateQuestion(); // יוצרים שאלה ראשונה
-    </script>
-</body>
-</html>
+pygame.quit()
